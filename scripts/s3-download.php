@@ -66,22 +66,15 @@ $failed = array();
 foreach ($dl as $file => $object) {
     //echo "Downloading {$file} ..." . PHP_EOL;
     try {
-        $status = $object->load();
+        // no scale PHP Fatal: String size overflow?! $status = $object->load();
+        $l = $object->getSignedUrl($ttl);
+        $c = "wget $l --output {$base}/{$file}";
+        echo "$c" . PHP_EOL;
+
     } catch (\Exception $e) {
         //var_dump($e); exit;
         $failed[$file] = $e->getMessage();
         continue;
-    }
-    if ($status === false) {
-        //echo "Could not load {$file}!" . PHP_EOL;
-        $failed[$file] = "Could not load.";
-        continue;
-    } else {
-        echo ".";
-    }
-    $status = file_put_contents("{$base}/{$file}", $object->data);
-    if ($status === false) {
-        $failed[$file] = "Could not write.";
     }
     unset($object);
 }
