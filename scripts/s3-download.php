@@ -69,14 +69,18 @@ foreach ($dl as $file => $object) {
         // no scale PHP Fatal: String size overflow?! $status = $object->load();
         $l = $object->getSignedUrl($ttl);
         $c = "wget \"{$l}\" --output-document \"{$base}/{$file}\"";
-        echo "$c" . PHP_EOL;
+        exec($c, $out, $status);
+        if ($status != '0') {
+            throw new \RuntimeException("$c failed");
+        }
+        echo ".";
+        unset($object);
 
     } catch (\Exception $e) {
         //var_dump($e); exit;
         $failed[$file] = $e->getMessage();
         continue;
     }
-    unset($object);
 }
 echo PHP_EOL;
 
