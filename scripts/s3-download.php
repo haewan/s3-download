@@ -67,8 +67,19 @@ foreach ($dl as $file => $object) {
     //echo "Downloading {$file} ..." . PHP_EOL;
     try {
         // no scale PHP Fatal: String size overflow?! $status = $object->load();
+
+        $output = "{$base}/{$file}";
+        if (file_exists($output)) {
+            if ($object->size == filesize("{$base}/{$file}")) {
+                //echo "Skipping {$file} (same size, already exists)" . PHP_EOL;
+                continue;
+            }
+            echo "Corrupt download? {$file}" . PHP_EOL;
+            unlink($output);
+        }
+
         $l = $object->getSignedUrl($ttl);
-        $c = "wget \"{$l}\" --output-document \"{$base}/{$file}\"";
+        $c = "wget \"{$l}\" --output-document \"{$output}\"";
         exec($c, $out, $status);
         if ($status != '0') {
             throw new \RuntimeException("$c failed");
