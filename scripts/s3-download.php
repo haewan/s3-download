@@ -1,5 +1,14 @@
 #!/usr/bin/env php
 <?php
+if (!class_exists('Services_Amazon_S3', false)) {
+    $status = @include 'Services/Amazon/S3.php';
+    if ($status === false) {
+        echo 'Missing: Services_Amazon_S3 dependency!' . PHP_EOL . PHP_EOL;
+        echo 'Please run "pear install Services_Amazon_S3-alpha" to fix this.' . PHP_EOL;
+        exit(1);
+    }
+}
+
 require_once 'Services/Amazon/S3.php';
 ini_set('display_errors', 1);
 
